@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const RouteWithLayout = props => {
@@ -8,11 +8,24 @@ const RouteWithLayout = props => {
   return (
     <Route
       {...rest}
-      render={matchProps => (
-        <Layout>
-          <Component {...matchProps} />
-        </Layout>
-      )}
+      render={matchProps => {
+        debugger
+        var token = localStorage["token"];
+        if (token || matchProps.location.pathname == "/sign-up" || matchProps.location.pathname == "/sign-in") {
+          return (
+            <Layout>
+              <Component {...matchProps} />
+            </Layout>
+          );
+        } else {
+          return (
+            <Redirect to={{
+              pathname: '/sign-in',
+              state: { from: matchProps.location }
+            }} />
+          )
+        }
+      }}
     />
   );
 };
